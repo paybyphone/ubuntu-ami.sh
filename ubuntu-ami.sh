@@ -25,17 +25,19 @@ declare -A args=(
 canonical_ownerid="099720109477"
 
 declare -A image_types=(
-  [hvm-ebs]="hvm"
-  [hvm-io1]="hvm-io1"
-  [hvm-ssd]="hvm-ssd"
-  [hvm-instance]="hvm-instance"
-  [pv-ebs]="ebs"
-  [pv-io1]="ebs-io1"
-  [pv-ssd]="ebs-ssd"
-  [pv-ebs]="ebs"
+  [hvm-ebs]="images/hvm"
+  [hvm-io1]="images/hvm-io1"
+  [hvm-ssd]="images/hvm-ssd"
+  [hvm-instance]="images/hvm-instance"
+  [pv-ebs]="images/ebs"
+  [pv-io1]="images/ebs-io1"
+  [pv-ssd]="images/ebs-ssd"
+  [pv-ebs]="images/ebs"
+  [pv-instance]="images"
 )
 
 declare -A releases=(
+  [xenial]="xenial-16.04"
   [wily]="wily-15.10"
   [vivid]="vivid-15.04"
   [utopic]="utopic-14.10"
@@ -150,9 +152,9 @@ run_search() {
     __release=${args[release]}
     __release_string=${releases[$__release]}
     __image_type=${args[image_type]}
-    __image_type_string=${image_types[$__image_type]}
+    __image_path_string=${image_types[$__image_type]}
     aws ec2 describe-images \
-      --filters Name=name,Values="ubuntu/images/${__image_type_string}/ubuntu-${__release_string}-amd64*" \
+      --filters Name=name,Values="ubuntu/${__image_path_string}/ubuntu-${__release_string}-amd64*" \
                 Name=owner-id,Values=${canonical_ownerid} \
       --query "Images[*].[CreationDate,ImageId,RootDeviceName]" --output text
   )
